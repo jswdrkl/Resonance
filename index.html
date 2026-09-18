@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="mr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>‘रेझोनन्स’</title>
+
+  <!-- Google Fonts: IBM Plex Sans and IBM Plex Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Devanagari:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            marathi: ['"IBM Plex Sans Devanagari"', '"IBM Plex Sans"', 'sans-serif'],
+          },
+          colors: {
+            paper: {
+              light: '#fcfbf7',
+              card: '#ffffff',
+              dark: '#0f1115',
+              darkcard: '#161920',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Ensure IBM Plex Sans is applied seamlessly with zero hyphenation or broken Marathi words */
+    * {
+      font-family: 'IBM Plex Sans Devanagari', 'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      word-break: normal;
+      overflow-wrap: normal;
+      hyphens: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .essay-text p {
+      word-break: normal !important;
+      overflow-wrap: normal !important;
+      hyphens: none !important;
+      line-height: 1.95;
+      letter-spacing: 0.01em;
+    }
+
+    /* Wave visual animation */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+    .wave-pulse {
+      animation: pulseGlow 5s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes harmonicFlow {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 240; }
+    }
+    .harmonic-line {
+      stroke-dasharray: 8, 12;
+      animation: harmonicFlow 14s linear infinite;
+    }
+
+    /* Scroll progress bar */
+    #progress-bar {
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+
+<body class="bg-[#fbfaf6] dark:bg-[#0d0f14] text-[#24292f] dark:text-[#e4e7ee] transition-colors duration-300 min-h-screen relative selection:bg-amber-500/20 dark:selection:bg-amber-300/30">
+
+  <!-- Reading Progress Bar at top -->
+  <div class="fixed top-0 left-0 w-full h-[3px] bg-transparent z-50">
+    <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-500 via-rose-400 to-amber-600 w-0"></div>
+  </div>
+
+  <!-- Minimal Floating Action Control (Theme, Font Size, Share) -->
+  <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-40 flex items-center gap-1.5 p-1.5 rounded-full bg-white/80 dark:bg-[#161922]/80 backdrop-blur-md border border-neutral-200/70 dark:border-neutral-800/80 shadow-md transition-all">
+    
+    <!-- Decrease Font -->
+    <button id="font-dec-btn" title="Decrease font size" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" aria-label="Decrease Font">
+      A-
+    </button>
+    
+    <!-- Increase Font -->
+    <button id="font-inc-btn" title="Increase font size" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" aria-label="Increase Font">
+      A+
+    </button>
+
+    <div class="w-px h-4 bg-neutral-300 dark:bg-neutral-700 mx-0.5"></div>
+
+    <!-- Share / Copy Button -->
+    <button id="share-btn" title="Share" class="w-8 h-8 rounded-full flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" aria-label="Share">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+      </svg>
+    </button>
+
+    <!-- Theme Toggle -->
+    <button id="theme-toggle" title="Toggle Theme" class="w-8 h-8 rounded-full flex items-center justify-center text-neutral-600 dark:text-amber-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" aria-label="Toggle Theme">
+      <!-- Sun icon (for dark mode) -->
+      <svg id="theme-icon-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+      <!-- Moon icon (for light mode) -->
+      <svg id="theme-icon-moon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Toast Notification for feedback -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-neutral-900/90 dark:bg-white/90 text-white dark:text-neutral-900 text-xs sm:text-sm font-medium shadow-xl opacity-0 pointer-events-none transition-opacity duration-300 z-50"></div>
+
+  <main class="w-full max-w-3xl mx-auto px-5 sm:px-8 md:px-12 pt-14 sm:pt-20 pb-24">
+    
+    <!-- Title Section -->
+    <header class="text-center mb-8 sm:mb-12">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 mb-3">
+        ‘रेझोनन्स’
+      </h1>
+      <div class="h-1 w-12 bg-amber-500/80 rounded-full mx-auto"></div>
+    </header>
+
+    <!-- Bespoke Resonance Artwork (Harmonic wave & acoustic resonance representation) -->
+    <div class="w-full my-8 sm:my-10 p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-amber-50/50 to-orange-50/20 dark:from-[#13161f] dark:to-[#0f1117] border border-amber-200/40 dark:border-neutral-800/80 shadow-sm overflow-hidden flex flex-col items-center justify-center">
+      <svg viewBox="0 0 700 240" class="w-full h-auto max-w-[620px] select-none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waveGradLight" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d97706" stop-opacity="0.1"/>
+            <stop offset="30%" stop-color="#d97706" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#b45309" stop-opacity="1"/>
+            <stop offset="70%" stop-color="#d97706" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#d97706" stop-opacity="0.1"/>
+          </linearGradient>
+          <linearGradient id="waveGradDark" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.1"/>
+            <stop offset="30%" stop-color="#fbbf24" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#fef3c7" stop-opacity="1"/>
+            <stop offset="70%" stop-color="#fbbf24" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.1"/>
+          </linearGradient>
+          <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Ambient circular resonance ripples -->
+        <circle cx="350" cy="120" r="100" fill="none" stroke="currentColor" class="text-amber-500/10 dark:text-amber-400/10" stroke-width="1.2"/>
+        <circle cx="350" cy="120" r="70" fill="none" stroke="currentColor" class="text-amber-500/20 dark:text-amber-400/20 wave-pulse" stroke-width="1.5"/>
+        <circle cx="350" cy="120" r="42" fill="none" stroke="currentColor" class="text-amber-500/35 dark:text-amber-300/35" stroke-width="1.8"/>
+        <circle cx="350" cy="120" r="18" fill="url(#centerGlow)"/>
+        <circle cx="350" cy="120" r="4.5" class="fill-amber-600 dark:fill-amber-300"/>
+
+        <!-- Harmonious Wave forms (Physics + Metaphysics representation) -->
+        <path d="M 30 120 Q 110 30, 190 120 T 350 120 T 510 120 T 670 120" fill="none" stroke="currentColor" class="text-amber-600/30 dark:text-amber-400/30" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 30 120 Q 110 210, 190 120 T 350 120 T 510 120 T 670 120" fill="none" stroke="currentColor" class="text-amber-600/30 dark:text-amber-400/30" stroke-width="1.5" stroke-linecap="round"/>
+
+        <!-- Resonating High Amplitude Standing Wave -->
+        <path d="M 70 120 Q 140 60, 210 120 Q 280 180, 350 120 Q 420 60, 490 120 Q 560 180, 630 120" fill="none" stroke="url(#waveGradDark)" class="hidden dark:inline" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M 70 120 Q 140 60, 210 120 Q 280 180, 350 120 Q 420 60, 490 120 Q 560 180, 630 120" fill="none" stroke="url(#waveGradLight)" class="inline dark:hidden" stroke-width="2.6" stroke-linecap="round"/>
+
+        <!-- Dynamic Resonance Harmonic dashed flow -->
+        <path d="M 50 120 C 150 40, 250 200, 350 120 C 450 40, 550 200, 650 120" fill="none" stroke="currentColor" class="text-amber-500/70 dark:text-amber-300/70 harmonic-line" stroke-width="1.4"/>
+      </svg>
+    </div>
+
+    <!-- Essay Body Content -->
+    <article id="essay-content" class="essay-text space-y-6 sm:space-y-7 text-base sm:text-lg text-neutral-800 dark:text-[#d6d9e0] font-normal leading-relaxed text-justify sm:text-left transition-all">
+
+      <p>
+        भौतिकशास्त्रात एक सिद्धांत आहे - ‘रेझोनन्स’. त्याची सर्वसाधारण व्याख्या आहे - <em class="italic font-medium text-neutral-900 dark:text-neutral-100">‘प्रत्येक वस्तूची स्वतःची एक ठराविक लय असते आणि त्या लयीत ती थरथरायला (vibrate व्हायला) तयार असते’.</em>
+      </p>
+
+      <p>
+        फक्त छोट्या-मोठ्या वस्तूच नव्हे तर एखाद्या भक्कम पायावर उभ्या असलेल्या इमारतीची देखील स्वतःची एक नैसर्गिक लय असते, आणि जेव्हा बाहेरील <em class="italic">vibrations</em> आणि त्या वस्तूची लय एकमेकांशी तंतोतंत जुळतात, तेव्हा बाहेरच्या लयीतील सर्व शक्ती त्या वस्तूत अगदी सहजपणे शिरते. यामुळे कमी ताकदीतही वस्तूची हालचाल खूप वाढू शकते.
+      </p>
+
+      <p>
+        ‘रेझोनन्स’च्या विरुद्ध आहे <em class="italic font-medium text-neutral-900 dark:text-neutral-100">forced vibrations.</em> म्हणजे एखादी वस्तू मुद्दामून, सक्तीने हलवणे. यात त्या वस्तूची आतली लय काय आहे याच्याशी काही संबंध नसल्याने त्या हलवण्याला अर्थातच बाहेरची ऊर्जा जास्त प्रमाणात लागते आणि <em class="italic">external force</em> थांबला की वस्तूचे थरथरणे देखील सत्वर थांबते.
+      </p>
+
+      <p>
+        रिश्टर-स्केलवर आकड्याने कमी भरणाऱ्या भूकंपात देखील एखादी इमारत पडते ती धरणीकंपाने होणारी व्हायब्रेशन्स आणि त्या इमारतीची लय एकच झाल्याने इमारत जोरात थरथरते म्हणून.
+      </p>
+
+      <p>
+        कोणत्याही तंतुवाद्याची तार हलकीशी जरी छेडली तरी त्यातून निर्माण होणाऱ्या कंपनांचा स्वर आणि वाद्याची पोकळी यांच्यात ‘रेझोनन्स’ होतो म्हणून येणारा आवाज मोठा होतो!
+      </p>
+
+      <!-- Divider Section -->
+      <div class="py-5 text-center select-none text-amber-600/70 dark:text-amber-400/70 tracking-[0.6em] text-lg font-bold">
+        * * *
+      </div>
+
+      <p>
+        वस्तूंची जशी ‘रेझोनेटिंग फ्रिक्वेन्सी’ असते तशी आपल्या प्रत्येकाची एक आतली ‘लय’ असते. सर्वसाधारणपणे स्वभाव म्हणतात त्याला. बाहेरून कसाही दिसला तरी त्यातला तो ‘स्व’ गळाला की उरणारा प्रत्येकाचा आतला ‘भाव’ तसा नैसर्गिकरित्या हळवा असतो. अर्थात इथे काही अपवाद सोडून देऊया.
+      </p>
+
+      <p>
+        हा आतला भाव आणि एखाद्या क्षणाचे वास्तव जेव्हां जुळतात तेव्हां शांत, स्वस्थ, शब्दातीत, आतून गार असे काहीतरी भारी पण वेगळे वाटते असा प्रत्येकाचा एक तरी अनुभव असतो. हे बाहेरचे त्या क्षणी मॅच होणारे वास्तव कोणासाठी काय असते ते सांगता येत नाही. काहीही असू शकते. चित्र काढणे, संगीत ऐकणे, गाणे, फोटो काढणे, काहीतरी तयार करणे, स्वयंपाक करणे, गड सर करणे, चालायला जाणे, टेकडीवर, नदीकाठी, समुद्रातीरी बसणे, कोणाबरोबर असणे किंवा पूर्ण एकांतात.. अगदी <em class="font-semibold text-neutral-900 dark:text-neutral-100 italic">काsहीssहीsss..</em>
+      </p>
+
+      <p class="font-medium">
+        <em class="italic">‘रेझोनन्स’ असतो तो. ज्याचा त्याचा स्वतःचा…</em>
+      </p>
+
+      <!-- Divider Section -->
+      <div class="py-5 text-center select-none text-amber-600/70 dark:text-amber-400/70 tracking-[0.6em] text-lg font-bold">
+        * * *
+      </div>
+
+      <p>
+        प्रत्येकजण चरितार्थासाठी, घरासाठी, कुटुंबासाठी जे काही करतो तेच त्याला मनापासून आवडणारे असते असे म्हणणे धाडसाचे ठरेल. किंबहुना तसे ते नसतेच. इथेही काही ‘नशीबवान अपवाद’ सोडून देऊया.
+      </p>
+
+      <p>
+        म्हणजे मग प्रत्येकजण नित्य आयुष्यात जे काही करत असतो ते एक प्रकारचे <em class="italic font-medium text-neutral-900 dark:text-neutral-100">forced vibration</em> असते असेच म्हणावे लागते. मनातून वाटत नसले तरी आयुष्याची गरज म्हणून.
+      </p>
+
+      <p>
+        एखाद्या निष्णात सर्जनच्या मनात ‘स्काल्पेल’ हाती न घेता काही वेगळेच सृजन करण्याची सुप्त इच्छा असते आणि अनेक आखीव-रेखीव ‘टाउनशिप्स’ प्रत्यक्षात उतरवणाऱ्या इंजीनियरला मनापासून घनदाट जंगलात तंबू ठोकून राहण्याची तीव्र आकांक्षा असते - यासारखी अनेक उदाहरणे असतात.
+      </p>
+
+      <p>
+        ही <em class="italic font-medium text-neutral-900 dark:text-neutral-100">forced vibrationsच</em> मग बहुतांश वेळा रोजच्या जीवनात निर्माण होणाऱ्या ताणतणाव व मानसिक अस्वास्थ्याला खतपाणी घालतात असे म्हणणे अगदीच चुकीचे ठरू नये. यातूनच ‘लाइफस्टाईल डिसऑर्डर्स’ जन्म घेत असाव्या.
+      </p>
+
+      <p>
+        या <em class="italic font-medium text-neutral-900 dark:text-neutral-100">Forced Vibrations</em> मुळे पैका मिळायला लागला, भौतिक गरजा पूर्ण होऊन प्रकरण कळत नकळत चंगळवादाकडे झुकू लागले की ‘अहं’ अधिकच फोफावतो. त्यातून जन्म घेणारी ‘मी काहीही सहज साध्य करू शकतो’ ही भावना कृतज्ञतेला पायदळी तुडवून अंतरीच्या ‘भावा’ला बिघडवून टाकते.
+      </p>
+
+      <p>
+        <em class="italic font-medium text-neutral-900 dark:text-neutral-100">Forced Vibrations</em> वाईट असतात, ती नको म्हणून मग आतला आवाज ऐकून प्रत्येकाने मनाला येईल तसे वागणे काही सहजसाध्य नाही आणि जगरहाटीत ते व्यवहार्य देखील नाही. शिवाय मला आतून हे असे अमुकच करायला आवडते म्हणून मी तेच करणार हा देखील ‘अहं’च नाही का?
+      </p>
+
+      <p class="font-medium text-neutral-900 dark:text-neutral-100">
+        काय करायचे मग यावर?
+      </p>
+
+      <p>
+        एक उपाय आहे तो म्हणजे - विधात्याने जे काही दिले आहे, ते जे आहे, जसे आहे तसे कृतज्ञतेने स्वीकारणे.
+      </p>
+
+      <p>
+        प्रथमदर्शनी अत्यंत दुरापास्त वाटते हे. कारण <em class="italic">forced vibrations</em> मुळे वाढलेल्या ‘मी’ला ते पटत नाही. पण तरीही तो आपल्याला ‘आपण’ कोणीतरी असल्याचा गंड झाला आहे हे कळणे आणि ते स्वीकारणे ही पुढच्या प्रवासासाठी अत्यंत महत्वाची पायरी आहे.
+      </p>
+
+      <p>
+        नियमित ध्यान-साधना, कृतज्ञता, सात्विक आहार व चांगल्या सवयींचा अंगिकार ही चार चाके असलेली रोल्स-रॉईस मग ज्याला त्याला एका <em class="italic font-medium text-neutral-900 dark:text-neutral-100">fitness</em> नावाच्या <em class="italic font-medium text-neutral-900 dark:text-neutral-100">physical, social, emotional &amp; professional</em> या चार मार्गिका असलेल्या ‘स्वीकार’ पथावर हळूहळू पुढे नेऊ लागते. रस्त्यावरच्या ‘रोड-साइन्स’ नीट दिसू लागतात, शॉक-अब्जॉर्बस नीट काम करू लागतात. प्रवास चालू असला तरी अधून मधून आतल्या आवडीचे थांबे घेत घेत आपल्या आतल्या ‘भावा’शी रेझोनेट होणाऱ्या फ्रिक्वेन्सी ट्यून करता येऊ लागतात.
+      </p>
+
+      <p>
+        या प्रवासात <em class="italic font-medium text-neutral-900 dark:text-neutral-100">Forced Vibrations</em> असतातच. ती चुकत नाहीत आणि स्वीकार पथाची चौथी मार्गिका इतर तीन इतकीच महत्वाची असल्याने चुकवूही नये. आपल्या गाडीने एकदा ‘क्रूझ-मोड’ अंगी मुरवला की कोणतीच <em class="italic font-medium text-neutral-900 dark:text-neutral-100">vibrations</em> जाणवत नाहीत.
+      </p>
+
+      <p>
+        <em class="italic font-medium text-neutral-900 dark:text-neutral-100">मला हेच आवडते, ते माझ्या डोक्यात जाते, हे करायचे होते, ते जमतच नाही</em> या आणि यासारख्या खाचखळग्यांचा फोलपणा उमगतो. किंबहुना क्षुल्लक शॉर्ट-कटच्या नादात आपण चुकीच्या रस्त्याने गाडी हाकत होतो हे कळते.
+      </p>
+
+      <p>
+        जसजसे पुढे जाऊ तसतसे ‘त्याच त्या’ प्रवासात वेळोवेळी शांत, स्वस्थ, शब्दातीत, आतून गारेगार असे काहीतरी भारी पण वेगळे असणारे ‘अनुभव-क्षण’ वरचेवर जाणवू लागतात, वेचता येऊ लागतात. आतल्या आत कुठेतरी लयीत थरथरायला होते.
+      </p>
+
+      <p class="font-medium text-neutral-900 dark:text-neutral-100">
+        <em class="italic">“शब्दांवाचून कळले सारे, शब्दांच्या पालिकडले” असे काहीतरी होते! अनुभूती येते!!</em>
+      </p>
+
+      <p class="font-medium text-neutral-900 dark:text-neutral-100">
+        <em class="italic">‘रेझोनन्स’ असतो तो! ज्याचा त्याचा स्वतःचा.. अद्वितीय…</em>
+      </p>
+
+      <div class="pt-8 sm:pt-10 text-right">
+        <p class="italic text-neutral-600 dark:text-neutral-400 font-medium">
+          ~ मकरसंक्रांत, ख्रिस्ताब्द २०२६ ते ईसवी..
+        </p>
+      </div>
+
+    </article>
+  </main>
+
+  <script>
+    // Theme Switcher Logic
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElem = document.documentElement;
+
+    // Check saved theme or system preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      htmlElem.classList.add('dark');
+    } else {
+      htmlElem.classList.remove('dark');
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      if (htmlElem.classList.contains('dark')) {
+        htmlElem.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        htmlElem.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    // Font Resizing Logic
+    const essayContent = document.getElementById('essay-content');
+    const fontSizes = [
+      { class: 'text-sm sm:text-base' },
+      { class: 'text-base sm:text-lg' },
+      { class: 'text-lg sm:text-xl' },
+      { class: 'text-xl sm:text-2xl' }
+    ];
+    let currentSizeIndex = 1; // Default: text-base sm:text-lg
+
+    const fontDecBtn = document.getElementById('font-dec-btn');
+    const fontIncBtn = document.getElementById('font-inc-btn');
+
+    function updateFontSize() {
+      fontSizes.forEach(s => {
+        s.class.split(' ').forEach(cls => essayContent.classList.remove(cls));
+      });
+      fontSizes[currentSizeIndex].class.split(' ').forEach(cls => essayContent.classList.add(cls));
+    }
+
+    fontDecBtn.addEventListener('click', () => {
+      if (currentSizeIndex > 0) {
+        currentSizeIndex--;
+        updateFontSize();
+      }
+    });
+
+    fontIncBtn.addEventListener('click', () => {
+      if (currentSizeIndex < fontSizes.length - 1) {
+        currentSizeIndex++;
+        updateFontSize();
+      }
+    });
+
+    // Reading Progress Indicator
+    window.addEventListener('scroll', () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / (docHeight || 1)) * 100;
+      document.getElementById('progress-bar').style.width = Math.min(Math.max(scrolled, 0), 100) + '%';
+    });
+
+    // Toast notification utility
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2400);
+    }
+
+    // Share and Copy Logic
+    const shareBtn = document.getElementById('share-btn');
+    shareBtn.addEventListener('click', async () => {
+      const shareData = {
+        title: '‘रेझोनन्स’',
+        text: '‘रेझोनन्स’ - भौतिकशास्त्रात एक सिद्धांत आहे आणि प्रत्येकाची एक आतली लय असते...',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (err) {
+          // Fallback if user cancels or fails
+        }
+      }
+
+      // Clipboard fallback using document.execCommand
+      const tempInput = document.createElement('input');
+      tempInput.value = window.location.href;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('लिंक कॉपी केली गेली आहे!');
+      } catch (err) {
+        showToast('लिंक कॉपी करता आली नाही');
+      }
+      document.body.removeChild(tempInput);
+    });
+  </script>
+</body>
+</html>
