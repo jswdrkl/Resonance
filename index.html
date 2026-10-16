@@ -22,7 +22,6 @@
       --btn-hover: #c9684e;
       --toggle-bg: #eee7dd;
       --toggle-color: #2b2725;
-      --note-color: #8d7b68;
     }
 
     [data-theme="dark"] {
@@ -37,7 +36,6 @@
       --btn-hover: #e79250;
       --toggle-bg: #2e3039;
       --toggle-color: #e6e2de;
-      --note-color: #a4978a;
     }
 
     * {
@@ -81,11 +79,6 @@
       align-items: center;
       gap: 6px;
       box-shadow: 0 2px 6px var(--shadow-color);
-      transition: background 0.3s, color 0.3s, transform 0.15s;
-    }
-
-    .theme-toggle:hover {
-      transform: translateY(-1px);
     }
 
     .container {
@@ -96,7 +89,6 @@
       border-radius: 16px;
       padding: 36px 32px;
       box-shadow: 0 10px 30px var(--shadow-color);
-      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     @media (max-width: 600px) {
@@ -112,7 +104,6 @@
 
     .title {
       font-size: 2.2rem;
-      font-weight: normal;
       color: var(--accent-color);
       margin-bottom: 12px;
       letter-spacing: 0.5px;
@@ -162,7 +153,9 @@
 
     .share-container {
       margin-top: 36px;
-      display: flex;
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
       justify-content: center;
     }
 
@@ -172,20 +165,13 @@
       border: none;
       padding: 12px 28px;
       font-size: 1rem;
-      font-weight: normal;
       font-family: inherit;
       border-radius: 30px;
       cursor: pointer;
-      display: inline-flex;
+      display: inline-flex !important;
       align-items: center;
       gap: 10px;
       box-shadow: 0 4px 12px var(--shadow-color);
-      transition: background-color 0.25s ease, transform 0.15s ease;
-    }
-
-    .share-button:hover {
-      background-color: var(--btn-hover);
-      transform: translateY(-2px);
     }
 
     .share-button svg {
@@ -207,7 +193,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
-      z-index: 999;
+      z-index: 9999;
     }
 
     .toast.show {
@@ -242,7 +228,6 @@
           </linearGradient>
         </defs>
 
-        <!-- Oscillating Harmonics -->
         <path fill="none" stroke="url(#waveGrad1)" stroke-width="3" stroke-linecap="round">
           <animate attributeName="d" dur="4s" repeatCount="indefinite"
             values="
@@ -261,7 +246,6 @@
             " />
         </path>
 
-        <!-- Core Resonance Node Rings -->
         <circle cx="250" cy="60" r="16" fill="none" stroke="#e07a5f" stroke-width="1.8">
           <animate attributeName="r" values="8; 32; 8" dur="2.4s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="1; 0; 1" dur="2.4s" repeatCount="indefinite" />
@@ -336,8 +320,8 @@
       <div class="musical-divider">🎶</div>
     </article>
 
-    <div class="share-container">
-      <button class="share-button" id="shareBtn">
+    <div class="share-container" id="shareContainer">
+      <button class="share-button" id="shareBtn" type="button">
         <svg viewBox="0 0 24 24">
           <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/>
         </svg>
@@ -349,7 +333,6 @@
   <div class="toast" id="toast">लिंक कॉपी झाली!</div>
 
   <script>
-    // Theme toggle handling
     const toggleBtn = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
     const themeText = document.getElementById('themeText');
@@ -368,53 +351,41 @@
       }
     });
 
-    // Reliable share implementation with fallback for Samsung Internet / restrictive environments
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
 
-    shareBtn.addEventListener('click', async () => {
-      const shareData = {
-        title: 'रेझोनन्स',
-        text: '‘रेझोनन्स’ - भौतिकशास्त्र आणि मानवी मनाची आंतरिक लय.',
-        url: window.location.href
-      };
-
+    shareBtn.addEventListener('click', () => {
+      const pageUrl = window.location.href;
+      
+      // Try native share sheet first
       if (navigator.share) {
-        try {
-          await navigator.share(shareData);
-          return;
-        } catch (err) {
-          // If user cancelled or native share throws an error, fallback to copying link
-          if (err.name === 'AbortError') return;
-        }
-      }
-
-      // Universal Fallback: Copy to Clipboard
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-          showToast();
-        }).catch(() => {
-          fallbackCopyToClipboard(window.location.href);
-        });
+        navigator.share({
+          title: 'रेझोनन्स',
+          text: '‘रेझोनन्स’ - भौतिकशास्त्र आणि मानवी मनाची आंतरिक लय.',
+          url: pageUrl
+        }).catch(() => {});
       } else {
-        fallbackCopyToClipboard(window.location.href);
+        // Fallback copy mechanism for all browsers including strict Samsung Internet environments
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(pageUrl).then(showToast).catch(fallbackCopy);
+        } else {
+          fallbackCopy();
+        }
       }
     });
 
-    function fallbackCopyToClipboard(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.position = "fixed";  // Avoid scrolling to bottom
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
+    function fallbackCopy() {
+      const input = document.createElement('input');
+      input.value = window.location.href;
+      document.body.appendChild(input);
+      input.select();
       try {
         document.execCommand('copy');
         showToast();
-      } catch (err) {
-        alert('URL: ' + text);
+      } catch (e) {
+        alert('URL: ' + window.location.href);
       }
-      document.body.removeChild(textArea);
+      document.body.removeChild(input);
     }
 
     function showToast() {
